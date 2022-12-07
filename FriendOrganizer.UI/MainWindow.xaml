@@ -1,0 +1,86 @@
+﻿<metro:MetroWindow
+    x:Class="FriendOrganizer.UI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FriendOrganizer.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:view="clr-namespace:FriendOrganizer.UI.View"
+    xmlns:vm="clr-namespace:FriendOrganizer.UI.ViewModel"
+    Title="Friend Organizer"
+    Width="1000"
+    Height="750"
+    FontSize="20"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:FriendDetailViewModel}">
+            <view:FriendDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:MeetingDetailViewModel}">
+            <view:MeetingDetailView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProgrammingLanguageDetailViewModel}">
+            <view:ProgrammingLanguageDetailView />
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Menu Grid.ColumnSpan="2" FontSize="20">
+            <MenuItem Header="Create">
+                <MenuItem
+                    Command="{Binding CreateNewDetailCommand}"
+                    CommandParameter="{x:Type vm:FriendDetailViewModel}"
+                    Header="Nowy friend" />
+                <MenuItem
+                    Command="{Binding CreateNewDetailCommand}"
+                    CommandParameter="{x:Type vm:MeetingDetailViewModel}"
+                    Header="Nowe spotkanie" />
+            </MenuItem>
+            <MenuItem Header="Edycja">
+                <MenuItem
+                    Command="{Binding OpenSingleDetailViewModel}"
+                    CommandParameter="{x:Type vm:ProgrammingLanguageDetailViewModel}"
+                    Header="Języki programujące" />
+            </MenuItem>
+        </Menu>
+        <view:NavigationView Grid.Row="1" DataContext="{Binding NavigationViewModel}" />
+
+        <TabControl
+            Grid.Row="1"
+            Grid.Column="1"
+            ItemsSource="{Binding DetailViewModels}"
+            SelectedItem="{Binding SelectedDetailViewModel, Mode=TwoWay}">
+            <TabControl.ItemContainerStyle>
+                <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
+                    <Setter Property="Background" Value="#333333" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="*" Visibility="{Binding HasChanges, Converter={StaticResource boolToVisConv}}" />
+                        <Button
+                            Margin="4,0,2,2"
+                            VerticalContentAlignment="Top"
+                            Command="{Binding CloseDetailViewCommand}"
+                            Content="X"
+                            FontSize="20"
+                            Style="{StaticResource ChromelessButtonStyle}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+    </Grid>
+</metro:MetroWindow>
